@@ -2,7 +2,7 @@ name: draggable_animation
 description: A starting point for Dart libraries or applications.
 version: 0.0.1
 homepage : https://horleng.vercel.app/
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/horlengg/flutter_draggable_animation
 
 environment:
   sdk: ^3.2.4

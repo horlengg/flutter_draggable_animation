@@ -1,0 +1,52 @@
+# Tooling & temporary
+.dart_tool/
+.idea/
+.vscode/
+build/
+*.iml
+*.log
+*.md.backup
+.DS_Store
+
+# OS-specific
+*.swp
+*.swo
+Thumbs.db
+ehthumbs.db
+
+# Exclude platform folders if not needed
+android/
+ios/
+linux/
+macos/
+windows/
+web/
+
+# Include only relevant parts of example
+example/android/
+example/ios/
+example/linux/
+example/macos/
+example/windows/
+example/web/
+example/.dart_tool/
+example/.idea/
+example/.vscode/
+example/build/
+example/test/
+# Exclude everything in example
+example/**
+
+# Allow just the minimal necessary example files
+!example/pubspec.yaml
+!example/lib/
+!example/lib/**
+!example/main.dart
+
+# Allow your actual package files
+!lib/
+!lib/**
+!pubspec.yaml
+!README.md
+!LICENSE
+!CHANGELOG.md

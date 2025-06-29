@@ -3,7 +3,16 @@
 A smooth, customizable drag-and-drop animation library for Flutter — inspired by iOS-style app rearranging. Create interactive menus or reorderable UI elements with ease.
 
 
-![Demo](https://res.cloudinary.com/decme1qrv/image/upload/v1751190270/restaurant-management/demo-ezgif.com-crop_egajcy.gif) 
+<br>
+<br>
+<br>
+<br>
+
+
+[![Watch the video](https://raw.githubusercontent.com/username/repository/branch/path/to/thumbnail.jpg)](https://raw.githubusercontent.com/horlengg/flutter_draggable_animation/master/demo.MP4)
+
+
+
 
  
 ---

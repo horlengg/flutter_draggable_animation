@@ -1,4 +1,4 @@
-# flutter_animation_draggable
+# draggable_animation
 
 A smooth, customizable drag-and-drop animation library for Flutter — inspired by iOS-style app rearranging. Create interactive menus or reorderable UI elements with ease.
 
@@ -7,13 +7,6 @@ A smooth, customizable drag-and-drop animation library for Flutter — inspired 
 <br>
 <br>
 <br>
-
-
-[![Watch the video](https://raw.githubusercontent.com/username/repository/branch/path/to/thumbnail.jpg)](https://raw.githubusercontent.com/horlengg/flutter_draggable_animation/master/demo.MP4)
-
-
-
-
  
 ---
 
@@ -46,9 +39,9 @@ dependencies:
 SizedBox(
   height: 300,
   width: double.infinity,
-  child: DraggaleAnimationMaker(
+  child: DraggaleAnimation(
     items: monthList, 
-    displayer: DraggaleAnimationMakerGridDisplay(
+    displayer: DraggableAnimationGridDisplay(
       columnCount: 4,
       rowHeight: 80,
       spacingX: 20,
@@ -62,6 +55,119 @@ SizedBox(
 
 ```
 
+### items
+list your item , it's also support generice type
+
+```dart
+DraggableAnimation(
+  items: ['Google','Photo','Notepad','Facebook','etc'],
+)
+
+```
+
+### builder
+is function that build your custom widget
+
+```dart
+DraggableAnimation(
+  builder: (data) => _buildCard(data), //data row of your items
+)
+
+```
+
+### feedbackBuilder
+Optional field , The function provide you build your custom widget when dragging
+
+```dart
+DraggableAnimation(
+  feedbackBuilder: (data) => _buildCustomDragItem(data), //data row of your items
+)
+```
+
+### displayer
+Property determine each item display as grid or row
+
+<b> DraggableAnimationGridDisplay </b>
+
+```dart
+displayer: DraggableAnimationGridDisplay(
+  columnCount: 4, // number of column per row
+  rowHeight: 80, // height of each row
+  spacingX: 20, // space between each column
+  spacingY: 20 // space between each row
+),
+
+```
+
+<b> DraggableAnimationRowDisplay </b>
+
+```dart
+displayer: DraggableAnimationRowDisplay(
+  colWidth: 100, // width of each columns
+  spacingX: 20 // space between each column
+),
+
+```
+
+### compareItemPosition
+Optional field, Property customize compare position of drag_item and each items in list <br>
+return true mean change item position
+
+```dart
+DraggableAnimationGridDisplay (
+  compareItemPosition: (dragItem, item) {
+    print(dragItem.toString()); // show information detail relate to item
+    print(item.toString()); // show information detail relate to item
+    return false;
+  },
+)
+```
+
+### percentag
+Optional field, 
+Property determine whether drag item and item match to change position <br>
+default value percentag is 0.5
+
+```dart
+DraggableAnimationGridDisplay (
+  percentag : 0.5 // 50% match position 
+)
+```
+
+### onChange
+Function for trigger when item change position
+
+```dart
+DraggableAnimation (
+  onChange: (from, to) {},
+)
+```
+
+### onDragStart
+Function for trigger when long press on item
+
+```dart
+DraggableAnimation (
+  onDragStart: () {},
+)
+```
+### onDragStop
+Function for trigger when drag item stop
+
+```dart
+DraggableAnimation (
+  onDragStop: () {},
+)
+
+```
+### onDragMove
+Function for trigger when drag item moving
+
+```dart
+DraggableAnimation (
+  onDragMove: (detail) {},
+)
+```
 
 
 ## 👤 Contact Me

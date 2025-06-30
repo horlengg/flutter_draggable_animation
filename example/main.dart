@@ -1,5 +1,6 @@
 
 
+
 import 'package:draggable_animation/draggable_animation.dart';
 import 'package:draggable_animation/draggable_animation_helper.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _MyAppState extends State<MyApp> {
     'November',
     'December',
   ];
+  
   List<String> applicationList = [
     'Calendar',
     'Email',
@@ -76,9 +78,9 @@ class _MyAppState extends State<MyApp> {
                   SizedBox(
                     height: 300,
                     width: double.infinity,
-                    child: DraggaleAnimationMaker(
+                    child: DraggableAnimation(
                       items: monthList, 
-                      displayer: DraggaleAnimationMakerGridDisplay(
+                      displayer: DraggableAnimationGridDisplay(
                         columnCount: 4,
                         rowHeight: 80,
                         spacingX: 20,
@@ -87,6 +89,7 @@ class _MyAppState extends State<MyApp> {
                       // duration: Duration(milliseconds: 100),
                       builder: (data) => _buildCard(data), 
                       feedbackBuilder: (data) => _buildCard(data,feedback: true), //custom style
+                      // onChange: (from, to) {},
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -96,9 +99,9 @@ class _MyAppState extends State<MyApp> {
                   SizedBox(
                     height: 50,
                     width: double.infinity,
-                    child: DraggaleAnimationMaker(
+                    child: DraggableAnimation(
                       items: applicationList, 
-                      displayer: DraggaleAnimationMakerRowDisplay(
+                      displayer: DraggableAnimationRowDisplay(
                         colWidth: 100,
                         spacingX: 20
                       ),

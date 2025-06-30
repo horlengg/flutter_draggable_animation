@@ -8,48 +8,52 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 
-abstract class DraggaleAnimationMakerDisplay {
+abstract class DraggableAnimationDisplay {
 
   final double spacingX;
   final double percentag;
+  final bool Function(DraggableAnimationItem dragItem,DraggableAnimationItem item)? compareItemPosition;
 
   // Constructor to initialize them
-  const DraggaleAnimationMakerDisplay({
+  const DraggableAnimationDisplay({
     required this.spacingX,
-    required this.percentag
+    required this.percentag,
+    this.compareItemPosition
   });
 
   
   void setLayoutPosition(
-    List<DraggableAnimationMakerItem> targetItemList,
+    List<DraggableAnimationItem> targetItemList,
     Size layoutSize
   );
   bool compareItemPositionWithPercentag (
-    DraggableAnimationMakerItem item, 
-    DraggableAnimationMakerItem compareItem,
+    DraggableAnimationItem item, 
+    DraggableAnimationItem compareItem,
     {
       ItemOffset? itemOffset
     }
   );
+  
 }
 
-class DraggaleAnimationMakerGridDisplay extends DraggaleAnimationMakerDisplay {
+class DraggableAnimationGridDisplay extends DraggableAnimationDisplay {
 
   final double columnCount;
   final double spacingY;
   final double rowHeight;
 
-  DraggaleAnimationMakerGridDisplay({
+  DraggableAnimationGridDisplay({
     required this.columnCount,
     required this.rowHeight,
     required this.spacingY,
     required double spacingX,
     double percentag = .5,
-  }):super(spacingX: spacingX,percentag :percentag);
+    bool Function(DraggableAnimationItem dragItem,DraggableAnimationItem item)? compareItemPosition,
+  }):super(spacingX: spacingX,percentag :percentag,compareItemPosition:compareItemPosition);
 
   @override
   void setLayoutPosition(
-    List<DraggableAnimationMakerItem> targetItemList,
+    List<DraggableAnimationItem> targetItemList,
     Size layoutSize
   ){
     final itemWidth = (layoutSize.width - spacingX * (columnCount -1) ) / columnCount ;
@@ -80,8 +84,8 @@ class DraggaleAnimationMakerGridDisplay extends DraggaleAnimationMakerDisplay {
 
   @override
   bool compareItemPositionWithPercentag(
-    DraggableAnimationMakerItem item, 
-    DraggableAnimationMakerItem compareItem,{
+    DraggableAnimationItem item, 
+    DraggableAnimationItem compareItem,{
       ItemOffset? itemOffset
     }
   ) {
@@ -96,19 +100,20 @@ class DraggaleAnimationMakerGridDisplay extends DraggaleAnimationMakerDisplay {
 
 
 }
-class DraggaleAnimationMakerRowDisplay extends DraggaleAnimationMakerDisplay {
+class DraggableAnimationRowDisplay extends DraggableAnimationDisplay {
 
   double colWidth;
 
-  DraggaleAnimationMakerRowDisplay({
+  DraggableAnimationRowDisplay({
     required this.colWidth,
     required double spacingX,
     double percentag = .5,
-  }):super(spacingX: spacingX,percentag: percentag);
+    bool Function(DraggableAnimationItem dragItem,DraggableAnimationItem item)? compareItemPosition,
+  }):super(spacingX: spacingX,percentag: percentag,compareItemPosition:compareItemPosition);
 
   @override
   void setLayoutPosition(
-    List<DraggableAnimationMakerItem> targetItemList,
+    List<DraggableAnimationItem> targetItemList,
     Size layoutSize
   ){
     double colCounter = 0;
@@ -124,8 +129,8 @@ class DraggaleAnimationMakerRowDisplay extends DraggaleAnimationMakerDisplay {
 
   @override
   bool compareItemPositionWithPercentag(
-    DraggableAnimationMakerItem item, 
-    DraggableAnimationMakerItem compareItem,{
+    DraggableAnimationItem item, 
+    DraggableAnimationItem compareItem,{
       ItemOffset? itemOffset 
     }
   ) {
@@ -141,7 +146,7 @@ class DraggaleAnimationMakerRowDisplay extends DraggaleAnimationMakerDisplay {
 
 }
 
-class DraggableAnimationMakerItem<T> {
+class DraggableAnimationItem<T> {
 
   String id;
   double dx;
@@ -150,7 +155,7 @@ class DraggableAnimationMakerItem<T> {
   double height;
   T data;
 
-  DraggableAnimationMakerItem({
+  DraggableAnimationItem({
     required this.id,
     required this.dx,
     required this.dy,
@@ -159,14 +164,14 @@ class DraggableAnimationMakerItem<T> {
     required this.data,
   });
 
-  DraggableAnimationMakerItem copyWith({
+  DraggableAnimationItem copyWith({
     String? id,
     double? dx,
     double? dy,
     double? width,
     double? height,
   }) {
-    return DraggableAnimationMakerItem(
+    return DraggableAnimationItem(
       id : id ?? this.id,
       dx : dx ?? this.dx,
       dy : dy ?? this.dy,
@@ -176,8 +181,8 @@ class DraggableAnimationMakerItem<T> {
     );
   }
 
-  static DraggableAnimationMakerItem init<T>(T data){
-    return DraggableAnimationMakerItem(
+  static DraggableAnimationItem init<T>(T data){
+    return DraggableAnimationItem(
       dx: 0,
       dy: 0,
       id: (100000 + Random().nextInt(900000)).toString(),
@@ -187,6 +192,17 @@ class DraggableAnimationMakerItem<T> {
     );
   }
 
+@override
+  String toString() {
+    return """
+        id     : $id, \n,
+        dx     : $dx,\n
+        dy     : $dy,\n
+        width  : $width,\n
+        height : $height,\n
+        data   : $data,\n
+      """;
+  }
 
 }
 class ItemOffset {
@@ -207,9 +223,9 @@ class DraggableAnimationHelper {
 
 
   static void changeItemPosition(
-    List<DraggableAnimationMakerItem> menuList,
-    DraggableAnimationMakerItem fromMenu,
-    DraggableAnimationMakerItem toMenu
+    List<DraggableAnimationItem> menuList,
+    DraggableAnimationItem fromMenu,
+    DraggableAnimationItem toMenu
   ){
     int fromIndex = menuList.indexWhere((e) => e.id == fromMenu.id);
     int toIndex = menuList.indexWhere((e) => e.id == toMenu.id);

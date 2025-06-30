@@ -8,9 +8,9 @@ import 'package:flutter/widgets.dart';
 
 
 
-class DraggaleAnimationMaker<T> extends StatefulWidget {
+class DraggableAnimation<T> extends StatefulWidget {
 
-  const DraggaleAnimationMaker({
+  const DraggableAnimation({
     super.key,
     required this.items,
     required this.displayer,
@@ -23,31 +23,29 @@ class DraggaleAnimationMaker<T> extends StatefulWidget {
     this.onDragStart,
     this.onDragStop,
     this.onDragMove,
-    this.compareItemPosition,
   });
 
   final Clip clipBehavior;
   final List<T> items;
   final Widget Function(T data) builder;
   final Widget Function(T data)? feedbackBuilder;
-  final DraggaleAnimationMakerDisplay displayer;
+  final DraggableAnimationDisplay displayer;
   final Duration duration;
   final Curve curve;
   final Function(T from,T to)? onChange;
   final Function? onDragStart; 
   final Function? onDragStop; 
   final Function(Offset)? onDragMove; 
-  final bool Function(DraggableAnimationMakerItem dragItem,DraggableAnimationMakerItem item)? compareItemPosition;
 
 
   @override
-  State<DraggaleAnimationMaker<T>> createState() => _DraggaleAnimationMakerState<T>();
+  State<DraggableAnimation<T>> createState() => _DraggableAnimationState<T>();
 }
 
-class _DraggaleAnimationMakerState<T> extends State<DraggaleAnimationMaker<T>> {
+class _DraggableAnimationState<T> extends State<DraggableAnimation<T>> {
 
-  List<DraggableAnimationMakerItem> _itemList = [];
-  DraggableAnimationMakerItem? _dragItem;
+  List<DraggableAnimationItem> _itemList = [];
+  DraggableAnimationItem? _dragItem;
   Size _layoutSize = const Size(0, 0);
   Map<String,GlobalKey> itemKeyMap = {};
   final _scrollController = ScrollController();
@@ -58,7 +56,7 @@ class _DraggaleAnimationMakerState<T> extends State<DraggaleAnimationMaker<T>> {
   void _generateItemList(){
     _itemList = List.generate(
       widget.items.length,
-      (index)=> DraggableAnimationMakerItem.init(widget.items[index])
+      (index)=> DraggableAnimationItem.init(widget.items[index])
     ).toList();
   }
 
@@ -90,7 +88,7 @@ class _DraggaleAnimationMakerState<T> extends State<DraggaleAnimationMaker<T>> {
     return _scrollController.offset.clamp(0.0,_scrollController.position.maxScrollExtent);
   }
 
-  ItemOffset getItemOffsetWhenDisplayAsRow(DraggableAnimationMakerItem menu){
+  ItemOffset getItemOffsetWhenDisplayAsRow(DraggableAnimationItem menu){
     double dx = menu.dx - _itemRowLayoutScrollX();
     double dy = menu.dy;
     return ItemOffset(dx: dx, dy: dy, width: menu.width, height: menu.height);
@@ -99,21 +97,20 @@ class _DraggaleAnimationMakerState<T> extends State<DraggaleAnimationMaker<T>> {
 
   _handleMoveItem(PointerMoveEvent details){
     if(_dragItem != null){
-      bool isGridDisplay = widget.displayer is DraggaleAnimationMakerGridDisplay;
+      bool isGridDisplay = widget.displayer is DraggableAnimationGridDisplay;
       setState(() {
         _dragItem!.dx += details.delta.dx;
         _dragItem!.dy += details.delta.dy;
         if(!isGridDisplay) _maybeAutoScroll(details.position.dx);
         widget.onDragMove?.call(Offset(_dragItem!.dx, _dragItem!.dy));
-        print("_rowLayoutOnScrolling : $_rowLayoutOnScrolling");
         if(_rowLayoutOnScrolling) return;
         for(var item in _itemList){
           ItemOffset? itemOffset = isGridDisplay ? null : getItemOffsetWhenDisplayAsRow(item);
           if(item.id == _dragItem!.id) continue;
           if( 
-            widget.compareItemPosition == null ? 
+            widget.displayer.compareItemPosition == null ? 
             widget.displayer.compareItemPositionWithPercentag(_dragItem!,item,itemOffset: itemOffset):
-            widget.compareItemPosition!(_dragItem!,item)
+            widget.displayer.compareItemPosition!(_dragItem!,item)
           ){
             DraggableAnimationHelper.changeItemPosition(_itemList,_dragItem!,item);
             widget.displayer.setLayoutPosition(_itemList,_layoutSize);
@@ -173,7 +170,7 @@ class _DraggaleAnimationMakerState<T> extends State<DraggaleAnimationMaker<T>> {
         _buildItemDragFeedback()
       ],
     );
-    if(widget.displayer is DraggaleAnimationMakerGridDisplay){
+    if(widget.displayer is DraggableAnimationGridDisplay){
       child = content;
     }else {
       var lastItem = _itemList.last;
@@ -209,7 +206,7 @@ class _DraggaleAnimationMakerState<T> extends State<DraggaleAnimationMaker<T>> {
       },
     );
   }
-  _buildItem(DraggableAnimationMakerItem item){
+  _buildItem(DraggableAnimationItem item){
     if(itemKeyMap[item.id] == null){
       itemKeyMap[item.id] = GlobalKey();
     }
@@ -223,7 +220,7 @@ class _DraggaleAnimationMakerState<T> extends State<DraggaleAnimationMaker<T>> {
         onLongPress: (){
           widget.onDragStart?.call();
           setState(() {
-            if(widget.displayer is DraggaleAnimationMakerGridDisplay){
+            if(widget.displayer is DraggableAnimationGridDisplay){
               _dragItem = item.copyWith();
             }else {
               GlobalKey currentItemKey = itemKeyMap[item.id]!;
@@ -248,12 +245,12 @@ class _DraggaleAnimationMakerState<T> extends State<DraggaleAnimationMaker<T>> {
     );
   }
   double _getFeedbackDragLeft(){
-    bool isGridDisplay = widget.displayer is DraggaleAnimationMakerGridDisplay;
+    bool isGridDisplay = widget.displayer is DraggableAnimationGridDisplay;
     return isGridDisplay ? _dragItem!.dx : _itemRowLayoutScrollX() + _dragItem!.dx;
   }
   _buildItemDragFeedback(){
     if(_dragItem == null) return const SizedBox();
-    DraggableAnimationMakerItem item = _dragItem!;
+    DraggableAnimationItem item = _dragItem!;
     if(itemKeyMap['feedbackitem'] == null){
       itemKeyMap['feedbackitem'] = GlobalKey();
     }

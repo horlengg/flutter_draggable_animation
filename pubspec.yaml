@@ -3,7 +3,7 @@ description: >
   A Flutter package that enables smooth drag-and-drop animations between menu areas, 
   inspired by iOS-style rearranging. Perfect for custom animated menus and item sorting.
 
-version: 0.0.2
+version: 0.0.4
 homepage : https://horleng.vercel.app/
 repository: https://github.com/horlengg/flutter_draggable_animation
 

@@ -1,14 +1,25 @@
 # draggable_animation
 
+
+[![pub version](https://img.shields.io/pub/v/slide_builder.svg)](https://pub.dev/packages/slide_builder)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Flutter](https://img.shields.io/badge/Flutter-Compatible-blue)](https://flutter.dev)
+
 A smooth, customizable drag-and-drop animation library for Flutter — inspired by iOS-style app rearranging. Create interactive menus or reorderable UI elements with ease.
 
+---
+
 
 <br>
 <br>
+
+## Demo
+![Demo](./demo.gif)
+
+
 <br>
 <br>
  
----
 
 
 ## ✨ Features
@@ -27,7 +38,7 @@ A smooth, customizable drag-and-drop animation library for Flutter — inspired 
 
 ```yaml
 dependencies:
-  draggable_animation : ^0.0.1
+  draggable_animation : ^0.0.4
 
 ```
 
@@ -37,19 +48,18 @@ dependencies:
 ```dart
 
 SizedBox(
-  height: 300,
-  width: double.infinity,
-  child: DraggaleAnimation(
-    items: monthList, 
+  height: MediaQuery.of(context).size.height,
+  width: MediaQuery.of(context).size.width,
+  child: DraggableAnimation(
+    items: List.generate(4 * 6, (index) => index), 
     displayer: DraggableAnimationGridDisplay(
       columnCount: 4,
       rowHeight: 80,
       spacingX: 20,
-      spacingY: 20
+      spacingY: 30
     ),
-    // duration: Duration(milliseconds: 100),
-    builder: (data) => _buildCard(data), 
-    // feedbackBuilder: (data) => _buildCard(data,feedback: true), //custom style
+    builder: (data)=> _buildAppIcon(),
+    feedbackBuilder: (data) => _buildAppIcon(feedback: true),
   ),
 ),
 

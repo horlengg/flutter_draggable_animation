@@ -1,7 +1,7 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library;
+library draggable_animation;
 
 export 'draggable_animation_base.dart';
 

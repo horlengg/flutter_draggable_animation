@@ -52,6 +52,7 @@ class _DraggableAnimationState<T> extends State<DraggableAnimation<T>> {
   final _itemRowLayout = GlobalKey();
   bool _rowLayoutOnScrolling = false;
   Timer? _rowLayoutOnScrollingTimer;
+  bool _isStateLoaded = false;
 
   void _generateItemList(){
     _itemList = List.generate(
@@ -68,6 +69,14 @@ class _DraggableAnimationState<T> extends State<DraggableAnimation<T>> {
       setState(() {
         widget.displayer.setLayoutPosition(_itemList,_layoutSize);
       });
+    });
+    Timer(const Duration(milliseconds: 500), () { 
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {
+          _isStateLoaded = true;
+        });
+      });
+
     });
   }
 
@@ -194,7 +203,9 @@ class _DraggableAnimationState<T> extends State<DraggableAnimation<T>> {
         _layoutSize = Size(constraints.maxWidth, constraints.maxHeight);
         return ScreenDetector(
           destroy: (){
-            widget.onDragStop?.call();
+            if(_dragItem != null){
+              widget.onDragStop?.call();
+            }
             setState(() {
               _dragItem = null;
             });
@@ -212,7 +223,7 @@ class _DraggableAnimationState<T> extends State<DraggableAnimation<T>> {
     }
     return AnimatedPositioned(
       key: itemKeyMap[item.id],
-      duration: widget.duration,
+      duration: _isStateLoaded ?  widget.duration : Duration.zero,
       curve: widget.curve,
       left: item.dx,
       top: item.dy,
@@ -233,7 +244,7 @@ class _DraggableAnimationState<T> extends State<DraggableAnimation<T>> {
             }
           });
         },
-        child: SizedBox(
+        child: Container(
           width: item.width,
           height: item.height,
           child: Opacity(
@@ -263,7 +274,7 @@ class _DraggableAnimationState<T> extends State<DraggableAnimation<T>> {
       key: itemKeyMap['feedbackitem'],
       left: _getFeedbackDragLeft(),
       top: item.dy,
-      child: SizedBox(
+      child: Container(
         height: item.height,
         width: item.width,
         child: feedbackChild,

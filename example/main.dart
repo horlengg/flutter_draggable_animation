@@ -6,14 +6,15 @@ import 'package:draggable_animation/draggable_animation_helper.dart';
 import 'package:flutter/material.dart';
 
 
-
 void main() async {
-  runApp(MyApp());
+  runApp(const MaterialApp(
+    home: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
-  final Uri? initialUri;
-  const MyApp({super.key, this.initialUri});
+
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -21,113 +22,50 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  List<String> monthList = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  
-  List<String> applicationList = [
-    'Calendar',
-    'Email',
-    'Camera',
-    'Photos',
-    'Maps',
-    'Messages',
-    'Phone',
-    'Contacts',
-    'Browser',
-  ];
-
-
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFF4B5D4), // Soft pinkish-lavender
-                Color(0xFF9E87F2), // Muted purple
-                Color(0xFF7E6BF1), // Deep purple/blue
-              ],
+    return Scaffold(
+      body : Container(
+        color: Colors.blueAccent,
+        padding: const EdgeInsets.only(left: 40.0,right: 40.0,bottom: 8.0,top: 80),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: DraggableAnimation(
+            items: List.generate(4 * 6, (index) => index), 
+            displayer: DraggableAnimationGridDisplay(
+              columnCount: 4,
+              rowHeight: 80,
+              spacingX: 20,
+              spacingY: 30
             ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal:12.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  const Text("List Item Disply Grid",style: TextStyle(fontSize: 30,color: Colors.white),),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 300,
-                    width: double.infinity,
-                    child: DraggableAnimation(
-                      items: monthList, 
-                      displayer: DraggableAnimationGridDisplay(
-                        columnCount: 4,
-                        rowHeight: 80,
-                        spacingX: 20,
-                        spacingY: 20
-                      ),
-                      // duration: Duration(milliseconds: 100),
-                      builder: (data) => _buildCard(data), 
-                      feedbackBuilder: (data) => _buildCard(data,feedback: true), //custom style
-                      // onChange: (from, to) {},
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  const Divider(),
-                  const Text("List Item Disply Row",style: TextStyle(fontSize: 30,color: Colors.white),),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 50,
-                    width: double.infinity,
-                    child: DraggableAnimation(
-                      items: applicationList, 
-                      displayer: DraggableAnimationRowDisplay(
-                        colWidth: 100,
-                        spacingX: 20
-                      ),
-                      builder: (data) => _buildCard(data),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            builder: (data)=> _buildAppIcon(),
+            feedbackBuilder: (data) => _buildAppIcon(feedback: true),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildCard(String data,{bool feedback = false}){
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white ,
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Center(
-        child: Text(data),
-      ),
+  _buildAppIcon({bool feedback = false}){
+    return Column(
+      children: [
+        Container(
+          width: 60,
+          height: 55,
+          decoration: BoxDecoration(
+            // color: Colors.amber,
+            image: const DecorationImage(
+              image: NetworkImage("https://d2ms8rpfqc4h24.cloudfront.net/What_is_Flutter_f648a606af.png"),
+              fit: BoxFit.cover
+            ),
+            borderRadius: BorderRadius.circular(15.0)
+          ),
+        ),
+        const SizedBox(height: 3),
+        feedback ? const SizedBox.shrink() : const Text("Flutter App",style: TextStyle(fontSize: 10,color: Colors.white,fontWeight: FontWeight.w600))
+      ],
     );
   }
-
 }
 
